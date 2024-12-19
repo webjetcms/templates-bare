@@ -7,18 +7,22 @@ const srcPath = upath.resolve(upath.dirname(__filename), '../src');
 
 sh.find(srcPath).forEach(_processFile);
 
-function _processFile(filePath) {
-    if (
-        filePath.match(/\.pug$/)
-        && !filePath.match(/include/)
-        && !filePath.match(/mixin/)
-        && !filePath.match(/\/pug\/layouts\//)
-    ) {
-        renderPug(filePath, false);
-    } else if (
-        filePath.match(/\.png$/)
-        && filePath.match(/pagebuilder/)
-    ) {
-        renderPug(filePath, true);
+async function _processFile(filePath) {
+    try {
+        if (
+            filePath.match(/\.pug$/)
+            && !filePath.match(/include/)
+            && !filePath.match(/mixin/)
+            && !filePath.match(/\/pug\/layouts\//)
+        ) {
+            await renderPug(filePath, false);
+        } else if (
+            filePath.match(/\.png$/)
+            && filePath.match(/pagebuilder/)
+        ) {
+            await renderPug(filePath, true);
+        }
+    } catch (err) {
+        console.error(`### Build PUG ERROR: ${err.message}`);
     }
 }

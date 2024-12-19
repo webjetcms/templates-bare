@@ -1,10 +1,10 @@
 'use strict';
 const fs = require('fs');
-const packageJSON = require('../package.json');
 const upath = require('upath');
 const sh = require('shelljs');
 const UglifyJS = require('uglify-js');
 const browserify = require('browserify');
+const babelify = require('babelify');
 const exorcist = require('exorcist');
 
 module.exports = function renderScripts() {
@@ -19,13 +19,12 @@ module.exports = function renderScripts() {
     const mapfile    = destPathScriptsJS + ".map";
 
     let bundler = browserify({
-        plugin: [
-          [ require('esmify'), {
-            nodeModules: true
-           } ]
-        ],
-        debug: true
-      });
+        debug: true // Povolenie source maps
+    }).transform(babelify, {
+        presets: ["@babel/preset-env"], // Transformácia ES modulov na CommonJS
+        sourceMaps: true
+    });
+
     bundler.add(sourcePathScriptsJS);
 
 
